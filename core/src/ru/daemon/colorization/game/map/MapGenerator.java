@@ -4,10 +4,13 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 public class MapGenerator {
+    public static final String TERRAIN_LAYER = "Terrain";
+
     public static TiledMap generateTiledMap(int width, int height) {
         TiledMap tiledMap = new TiledMap();
         tiledMap.getTileSets().addTileSet(ColorTileSet.getTileSet());
         TiledMapTileLayer layer = new TiledMapTileLayer(width, height, ColorTileSet.TILE_SIZE, ColorTileSet.TILE_SIZE);
+        layer.setName(TERRAIN_LAYER);
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 ColorCell cell = new ColorCell();
