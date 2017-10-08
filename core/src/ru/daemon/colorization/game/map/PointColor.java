@@ -3,8 +3,8 @@ package ru.daemon.colorization.game.map;
 import com.badlogic.gdx.graphics.Color;
 
 public class PointColor {
-    public static final int MAX = 16;
-    private static final int MAX_BITS = 31 - Integer.numberOfLeadingZeros(MAX);
+    public static final int COLORS_NUMBER = 3;
+    private static final int BITS_TO_ENCODE = 32 - Integer.numberOfLeadingZeros(COLORS_NUMBER - 1);//log2(x)
     private int red, green, blue;
 
     public PointColor() {
@@ -51,23 +51,23 @@ public class PointColor {
         int id = 0;
 
         id |= red;
-        id <<= MAX_BITS;
+        id <<= BITS_TO_ENCODE;
         id |= green;
-        id <<= MAX_BITS;
+        id <<= BITS_TO_ENCODE;
         id |= blue;
 
         return id;
     }
 
     private static float toFloat(int color) {
-        return 0.2f + 0.6f * color / (float) MAX;
+        return 0.2f + 0.8f * color / (float) COLORS_NUMBER;
     }
     private static void validate(int color) {
         if (color < 0){
             throw new IllegalArgumentException("Color should not be negative. Given = " + color);
         }
-        if (color >= MAX){
-            throw new IllegalArgumentException("Color should be less than " + MAX + ". Given = " + color);
+        if (color >= COLORS_NUMBER){
+            throw new IllegalArgumentException("Color should be less than " + COLORS_NUMBER + ". Given = " + color);
         }
     }
 }

@@ -16,9 +16,9 @@ public class ColorTileSet {
         if (tileSet != null) return tileSet;
 
         tileSet = new TiledMapTileSet();
-        for (byte r = 0; r < PointColor.MAX; r++) {
-            for (byte g = 0; g < PointColor.MAX; g++) {
-                for (byte b = 0; b < PointColor.MAX; b++) {
+        for (byte r = 0; r < PointColor.COLORS_NUMBER; r++) {
+            for (byte g = 0; g < PointColor.COLORS_NUMBER; g++) {
+                for (byte b = 0; b < PointColor.COLORS_NUMBER; b++) {
                     PointColor color = new PointColor(r, g, b);
                     tileSet.putTile(color.getId(), generateTile(color.getTrueColor()));
                 }
