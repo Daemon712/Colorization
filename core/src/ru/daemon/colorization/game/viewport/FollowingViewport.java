@@ -1,10 +1,9 @@
-package ru.daemon.colorization.game.actors;
+package ru.daemon.colorization.game.viewport;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.utils.Align;
-import ru.daemon.colorization.game.BoundedViewport;
 
 public class FollowingViewport extends Action {
     private final BoundedViewport viewport;

@@ -1,4 +1,4 @@
-package ru.daemon.colorization.game;
+package ru.daemon.colorization.game.viewport;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;

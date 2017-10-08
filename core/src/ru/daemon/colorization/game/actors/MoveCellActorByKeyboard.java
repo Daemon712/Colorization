@@ -1,9 +1,8 @@
-package ru.daemon.colorization.game.actors.listeners;
+package ru.daemon.colorization.game.actors;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import ru.daemon.colorization.game.actors.CellActor;
 
 public class MoveCellActorByKeyboard extends InputListener {
     private CellActor actor;

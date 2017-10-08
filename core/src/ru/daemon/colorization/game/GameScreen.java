@@ -10,10 +10,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import ru.daemon.colorization.game.actors.ActorTextureFactory;
 import ru.daemon.colorization.game.actors.CellActor;
-import ru.daemon.colorization.game.actors.FollowingViewport;
-import ru.daemon.colorization.game.actors.listeners.MoveCellActorByKeyboard;
-import ru.daemon.colorization.game.actors.listeners.ZoomViewportByMouseWheel;
+import ru.daemon.colorization.game.viewport.FollowingViewport;
+import ru.daemon.colorization.game.actors.MoveCellActorByKeyboard;
+import ru.daemon.colorization.game.viewport.ZoomViewportByMouseWheel;
 import ru.daemon.colorization.game.map.MapGenerator;
+import ru.daemon.colorization.game.viewport.BoundedViewport;
 
 public class GameScreen extends ScreenAdapter {
     private final OrthogonalTiledMapRenderer mapRenderer;

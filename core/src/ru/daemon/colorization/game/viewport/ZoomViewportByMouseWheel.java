@@ -1,9 +1,9 @@
-package ru.daemon.colorization.game.actors.listeners;
+package ru.daemon.colorization.game.viewport;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import ru.daemon.colorization.game.BoundedViewport;
+import ru.daemon.colorization.game.viewport.BoundedViewport;
 
 public class ZoomViewportByMouseWheel extends InputListener {
     private final BoundedViewport viewport;
