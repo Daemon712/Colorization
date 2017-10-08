@@ -7,9 +7,15 @@ public class BoundedViewport extends ExtendViewport {
     private float bottomBound, topBound, leftBound, rightBound;
     private final float boundHeight, boundWidth;
     private float zoom;
+    private float offset;
 
     public BoundedViewport(float zoom, float boundHeight, float boundWidth, Camera camera) {
+        this(zoom, boundHeight, boundWidth, 0, camera);
+    }
+
+    public BoundedViewport(float zoom, float boundHeight, float boundWidth, float offset, Camera camera) {
         super(zoom, zoom, camera);
+        this.offset = offset;
         this.boundHeight = boundHeight;
         this.boundWidth = boundWidth;
         setZoom(zoom);
@@ -58,9 +64,9 @@ public class BoundedViewport extends ExtendViewport {
     }
 
     private void calculateBounds(){
-        bottomBound = getWorldHeight() / 2;
+        bottomBound = getWorldHeight() / 2 + offset;
         topBound = boundHeight - bottomBound;
-        leftBound = getWorldWidth() / 2;
+        leftBound = getWorldWidth() / 2 + offset;
         rightBound = boundWidth - leftBound;
     }
 }

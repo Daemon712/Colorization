@@ -32,7 +32,7 @@ public class GameScreen extends ScreenAdapter {
         terrainHeight = terrain.getHeight() * terrain.getTileHeight();
         terrainWidth = terrain.getWidth() * terrain.getTileWidth();
         camera = new OrthographicCamera();
-        viewport = new BoundedViewport(zoom, terrainHeight, terrainWidth, camera);
+        viewport = new BoundedViewport(zoom, terrainHeight, terrainWidth, -10, camera);
         worldStage = new Stage(viewport);
 
         player = new CellActor(terrain, ActorTextureFactory.createPlayerTexture());
@@ -55,7 +55,7 @@ public class GameScreen extends ScreenAdapter {
     public void render(float delta) {
         worldStage.act(delta);
 
-        Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
+        Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if (camera.viewportWidth > terrainWidth){
