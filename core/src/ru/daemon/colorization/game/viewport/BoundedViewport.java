@@ -1,13 +1,15 @@
 package ru.daemon.colorization.game.viewport;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 public class BoundedViewport extends ExtendViewport {
     private float bottomBound, topBound, leftBound, rightBound;
     private final float boundHeight, boundWidth;
     private float zoom;
-    private float offset;
+    private final float offset;
+    private final float maxZoom, minZoom;
 
     public BoundedViewport(float zoom, float boundHeight, float boundWidth, float offset){
         super(zoom, zoom);
@@ -15,6 +17,8 @@ public class BoundedViewport extends ExtendViewport {
         this.boundHeight = boundHeight;
         this.boundWidth = boundWidth;
         setZoom(zoom);
+        this.maxZoom = Math.max(boundHeight, boundWidth) - 2 * offset;
+        this.minZoom = zoom;
     }
 
     public float getZoom() {
@@ -22,9 +26,12 @@ public class BoundedViewport extends ExtendViewport {
     }
 
     public void setZoom(float zoom) {
-        this.zoom = zoom;
-        setMinWorldHeight(zoom);
-        setMinWorldWidth(zoom);
+        float clamp = MathUtils.clamp(zoom, minZoom, maxZoom);
+        if (clamp == this.zoom) return;
+
+        this.zoom = clamp;
+        setMinWorldHeight(this.zoom);
+        setMinWorldWidth(this.zoom);
         update(getScreenWidth(), getScreenHeight());
         calculateBounds();
     }
@@ -51,6 +58,10 @@ public class BoundedViewport extends ExtendViewport {
 
     public float getBoundWidth() {
         return boundWidth;
+    }
+
+    public float getOffset() {
+        return offset;
     }
 
     public OrthographicCamera getCamera() {

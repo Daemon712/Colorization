@@ -10,11 +10,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import ru.daemon.colorization.game.actors.ActorTextureFactory;
 import ru.daemon.colorization.game.actors.CellActor;
-import ru.daemon.colorization.game.viewport.FollowingViewport;
 import ru.daemon.colorization.game.actors.MoveCellActorByKeyboard;
-import ru.daemon.colorization.game.viewport.ZoomViewportByMouseWheel;
 import ru.daemon.colorization.game.map.MapGenerator;
 import ru.daemon.colorization.game.viewport.BoundedViewport;
+import ru.daemon.colorization.game.viewport.FollowingViewportAction;
+import ru.daemon.colorization.game.viewport.ZoomViewportByScroll;
 
 public class GameScreen extends ScreenAdapter {
     private final OrthogonalTiledMapRenderer mapRenderer;
@@ -28,19 +28,20 @@ public class GameScreen extends ScreenAdapter {
         TiledMapTileLayer terrain = (TiledMapTileLayer) mapRenderer.getMap().getLayers().get(MapGenerator.TERRAIN_LAYER);
         float terrainHeight = terrain.getHeight() * terrain.getTileHeight();
         float terrainWidth = terrain.getWidth() * terrain.getTileWidth();
-        viewport = new BoundedViewport(300, terrainHeight, terrainWidth, -10);
+        float tileSize = (terrain.getTileHeight() + terrain.getTileWidth()) / 2;
+        viewport = new BoundedViewport(5 * tileSize, terrainHeight, terrainWidth, -tileSize / 2);
 
         worldStage = new Stage(viewport);
 
         CellActor player = new CellActor(terrain, ActorTextureFactory.createPlayerTexture());
         player.setCellX(0);
         player.setCellY(0);
-        player.addAction(Actions.forever(new FollowingViewport(viewport)));
+        player.addAction(Actions.forever(new FollowingViewportAction(viewport)));
 
         worldStage.addActor(player);
 
         worldStage.addListener(new MoveCellActorByKeyboard(player));
-        worldStage.addListener(new ZoomViewportByMouseWheel(viewport));
+        worldStage.addListener(new ZoomViewportByScroll(worldStage));
 
         Gdx.input.setInputProcessor(worldStage);
     }
