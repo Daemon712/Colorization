@@ -1,6 +1,6 @@
 package ru.daemon.colorization.game;
 
-import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 public class BoundedViewport extends ExtendViewport {
@@ -9,12 +9,8 @@ public class BoundedViewport extends ExtendViewport {
     private float zoom;
     private float offset;
 
-    public BoundedViewport(float zoom, float boundHeight, float boundWidth, Camera camera) {
-        this(zoom, boundHeight, boundWidth, 0, camera);
-    }
-
-    public BoundedViewport(float zoom, float boundHeight, float boundWidth, float offset, Camera camera) {
-        super(zoom, zoom, camera);
+    public BoundedViewport(float zoom, float boundHeight, float boundWidth, float offset){
+        super(zoom, zoom);
         this.offset = offset;
         this.boundHeight = boundHeight;
         this.boundWidth = boundWidth;
@@ -55,6 +51,10 @@ public class BoundedViewport extends ExtendViewport {
 
     public float getBoundWidth() {
         return boundWidth;
+    }
+
+    public OrthographicCamera getCamera() {
+        return (OrthographicCamera) super.getCamera();
     }
 
     @Override

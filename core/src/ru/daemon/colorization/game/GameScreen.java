@@ -3,7 +3,6 @@ package ru.daemon.colorization.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -17,25 +16,22 @@ import ru.daemon.colorization.game.actors.listeners.ZoomViewportByMouseWheel;
 import ru.daemon.colorization.game.map.MapGenerator;
 
 public class GameScreen extends ScreenAdapter {
-    private final TiledMap map = MapGenerator.generateTiledMap(16, 16);
-    private final OrthogonalTiledMapRenderer mapRenderer = new OrthogonalTiledMapRenderer(map);
-    private final OrthographicCamera camera;
+    private final OrthogonalTiledMapRenderer mapRenderer;
     private final BoundedViewport viewport;
     private final Stage worldStage;
-    private final CellActor player;
-    private final float terrainHeight;
-    private final float terrainWidth;
 
     public GameScreen() {
-        int zoom = 300;
-        TiledMapTileLayer terrain = (TiledMapTileLayer) map.getLayers().get(MapGenerator.TERRAIN_LAYER);
-        terrainHeight = terrain.getHeight() * terrain.getTileHeight();
-        terrainWidth = terrain.getWidth() * terrain.getTileWidth();
-        camera = new OrthographicCamera();
-        viewport = new BoundedViewport(zoom, terrainHeight, terrainWidth, -10, camera);
+        TiledMap map = MapGenerator.generateTiledMap(16, 16);
+        mapRenderer = new OrthogonalTiledMapRenderer(map);
+
+        TiledMapTileLayer terrain = (TiledMapTileLayer) mapRenderer.getMap().getLayers().get(MapGenerator.TERRAIN_LAYER);
+        float terrainHeight = terrain.getHeight() * terrain.getTileHeight();
+        float terrainWidth = terrain.getWidth() * terrain.getTileWidth();
+        viewport = new BoundedViewport(300, terrainHeight, terrainWidth, -10);
+
         worldStage = new Stage(viewport);
 
-        player = new CellActor(terrain, ActorTextureFactory.createPlayerTexture());
+        CellActor player = new CellActor(terrain, ActorTextureFactory.createPlayerTexture());
         player.setCellX(0);
         player.setCellY(0);
         player.addAction(Actions.forever(new FollowingViewport(viewport)));
@@ -60,7 +56,7 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        mapRenderer.setView(camera);
+        mapRenderer.setView(viewport.getCamera());
         mapRenderer.render();
         worldStage.draw();
     }
