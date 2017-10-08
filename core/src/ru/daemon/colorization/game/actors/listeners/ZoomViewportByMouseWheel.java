@@ -19,7 +19,7 @@ public class ZoomViewportByMouseWheel extends InputListener {
     }
 
     public ZoomViewportByMouseWheel(BoundedViewport viewport) {
-        this(viewport, 150, 600, 15);
+        this(viewport, 100, 800, 20);
     }
 
     @Override

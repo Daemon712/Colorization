@@ -3,7 +3,7 @@ package ru.daemon.colorization.game.map;
 import com.badlogic.gdx.graphics.Color;
 
 public class PointColor {
-    public static final int COLORS_NUMBER = 3;
+    public static final int COLORS_NUMBER = 4;
     private static final int BITS_TO_ENCODE = 32 - Integer.numberOfLeadingZeros(COLORS_NUMBER - 1);//log2(x)
     private int red, green, blue;
 

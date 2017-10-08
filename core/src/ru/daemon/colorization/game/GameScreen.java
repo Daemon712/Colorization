@@ -17,7 +17,7 @@ import ru.daemon.colorization.game.actors.listeners.ZoomViewportByMouseWheel;
 import ru.daemon.colorization.game.map.MapGenerator;
 
 public class GameScreen extends ScreenAdapter {
-    private final TiledMap map = MapGenerator.generateTiledMap(16, 16);
+    private final TiledMap map = MapGenerator.generateTiledMap(32, 32);
     private final OrthogonalTiledMapRenderer mapRenderer = new OrthogonalTiledMapRenderer(map);
     private final OrthographicCamera camera;
     private final BoundedViewport viewport;

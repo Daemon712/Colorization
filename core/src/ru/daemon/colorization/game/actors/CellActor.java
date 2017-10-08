@@ -75,6 +75,6 @@ public class CellActor extends Image {
     private void updatePosition(){
         float newX = this.cellX * tileLayer.getTileWidth();
         float newY = this.cellY * tileLayer.getTileHeight();
-        this.addAction(Actions.moveTo(newX, newY, 0.5f));
+        this.addAction(Actions.moveTo(newX, newY, 0.2f));
     }
 }
