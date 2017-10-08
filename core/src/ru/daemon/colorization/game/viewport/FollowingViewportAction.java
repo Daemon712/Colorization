@@ -16,13 +16,13 @@ public class FollowingViewportAction extends Action {
 
     @Override
     public boolean act(float delta) {
-        if (camera.viewportWidth > viewport.getBoundWidth()) {
+        if (camera.viewportWidth > viewport.getBoundWidth() - 2 * viewport.getOffset()) {
             camera.position.x = viewport.getBoundWidth() / 2;
         } else {
             camera.position.x = MathUtils.clamp(target.getX(Align.center), viewport.getLeftBound(), viewport.getRightBound());
         }
 
-        if (camera.viewportHeight > viewport.getBoundHeight()) {
+        if (camera.viewportHeight > viewport.getBoundHeight() - 2 * viewport.getOffset()) {
             camera.position.y = viewport.getBoundHeight() / 2;
         } else {
             camera.position.y = MathUtils.clamp(target.getY(Align.center), viewport.getBottomBound(), viewport.getTopBound());
