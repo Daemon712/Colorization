@@ -1,11 +1,13 @@
 package ru.daemon.colorization;
 
 import com.badlogic.gdx.Game;
-import ru.daemon.colorization.game.GameScreen;
+import com.kotcrab.vis.ui.VisUI;
+import ru.daemon.colorization.menu.MainMenuScreen;
 
 public class Application extends Game {
 	@Override
 	public void create () {
-		setScreen(new GameScreen());
+		VisUI.load(VisUI.SkinScale.X2);
+		setScreen(new MainMenuScreen(this));
 	}
 }

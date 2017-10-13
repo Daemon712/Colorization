@@ -1,11 +1,15 @@
 package ru.daemon.colorization.game;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import ru.daemon.colorization.game.actors.ActorTextureFactory;
@@ -15,17 +19,17 @@ import ru.daemon.colorization.game.map.MapGenerator;
 import ru.daemon.colorization.game.viewport.BoundedViewport;
 import ru.daemon.colorization.game.viewport.FollowingViewportAction;
 import ru.daemon.colorization.game.viewport.ZoomViewportByScroll;
+import ru.daemon.colorization.menu.MainMenuScreen;
 
 public class GameScreen extends ScreenAdapter {
     private final OrthogonalTiledMapRenderer mapRenderer;
     private final BoundedViewport viewport;
     private final Stage worldStage;
 
-    public GameScreen() {
-        TiledMap map = MapGenerator.generateTiledMap(16, 16);
+    public GameScreen(final Game game, TiledMap map) {
         mapRenderer = new OrthogonalTiledMapRenderer(map);
 
-        TiledMapTileLayer terrain = (TiledMapTileLayer) mapRenderer.getMap().getLayers().get(MapGenerator.TERRAIN_LAYER);
+        final TiledMapTileLayer terrain = (TiledMapTileLayer) mapRenderer.getMap().getLayers().get(MapGenerator.TERRAIN_LAYER);
         float terrainHeight = terrain.getHeight() * terrain.getTileHeight();
         float terrainWidth = terrain.getWidth() * terrain.getTileWidth();
         float tileSize = (terrain.getTileHeight() + terrain.getTileWidth()) / 2;
@@ -42,7 +46,20 @@ public class GameScreen extends ScreenAdapter {
 
         worldStage.addListener(new MoveCellActorByKeyboard(player));
         worldStage.addListener(new ZoomViewportByScroll(worldStage));
+        worldStage.addListener(new InputListener(){
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Input.Keys.ESCAPE){
+                    game.setScreen(new MainMenuScreen(game));
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
 
+    @Override
+    public void show() {
         Gdx.input.setInputProcessor(worldStage);
     }
 
