@@ -23,58 +23,29 @@ public class CellActor extends Image {
         return cellY;
     }
 
-    public void setCellX(int cellX) {
-        if (cellX < 0 || cellX >= tileLayer.getWidth())
+    public void setCellPosition(int cellX, int cellY) {
+        setCellPosition(cellX, cellY, 0);
+    }
+
+    public void setCellPosition(int cellX, int cellY, float duration){
+        if (!checkCellPosition(cellX, cellY))
             throw new IllegalArgumentException();
 
         this.cellX = cellX;
-        updatePosition();
-    }
-
-    public void setCellY(int cellY) {
-        if (cellY < 0 || cellY >= tileLayer.getHeight())
-            throw new IllegalArgumentException();
-
         this.cellY = cellY;
-        updatePosition();
-    }
 
-    public boolean moveUp() {
-        if (cellY == tileLayer.getHeight() - 1)
-            return false;
-
-        this.cellY++;
-        updatePosition();
-        return true;
-    }
-    public boolean moveDown() {
-        if (cellY == 0)
-            return false;
-
-        this.cellY--;
-        updatePosition();
-        return true;
-    }
-    public boolean moveLeft() {
-        if (cellX == 0)
-            return false;
-
-        this.cellX--;
-        updatePosition();
-        return true;
-    }
-    public boolean moveRight() {
-        if (cellX == tileLayer.getWidth() - 1)
-            return false;
-
-        this.cellX++;
-        updatePosition();
-        return true;
-    }
-
-    private void updatePosition(){
         float newX = this.cellX * tileLayer.getTileWidth();
         float newY = this.cellY * tileLayer.getTileHeight();
-        this.addAction(Actions.moveTo(newX, newY, 0.2f));
+
+        if (duration <= 0){
+            this.setPosition(newX, newY);
+        } else {
+            this.addAction(Actions.moveTo(newX, newY, duration));
+        }
+    }
+
+    public boolean checkCellPosition(int cellX, int cellY){
+        return cellY >= 0 && cellY < tileLayer.getHeight() &&
+                cellX >= 0 && cellX < tileLayer.getWidth();
     }
 }
