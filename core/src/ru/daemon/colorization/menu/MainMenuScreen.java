@@ -21,12 +21,15 @@ public class MainMenuScreen extends ScreenAdapter {
     private Stage stage;
     private final IntSpinnerModel worldWidthModel = new IntSpinnerModel(16, 8, 128, 4);
     private final IntSpinnerModel worldHeightModel = new IntSpinnerModel(16, 8, 128, 4);
+    private final IntSpinnerModel colorStepsModel = new IntSpinnerModel(4, 2, 10, 1);
 
     public MainMenuScreen(final Game game) {
         stage = new Stage(new ExtendViewport(600, 600));
         VisTable table = new VisTable();
         table.setPosition(stage.getWidth()/2, stage.getHeight()/2);
         table.add(new VisLabel("Colorization")).pad(10);
+        table.row();
+        table.add(new Spinner("Color steps", colorStepsModel)).right().pad(5);
         table.row();
         table.add(new Spinner("World width", worldWidthModel)).right().pad(5);
         table.row();
@@ -39,7 +42,8 @@ public class MainMenuScreen extends ScreenAdapter {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 int worldWidth = worldWidthModel.getValue();
                 int worldHeight = worldHeightModel.getValue();
-                TiledMap map = MapGenerator.generateTiledMap(worldWidth, worldHeight);
+                int colorSteps = colorStepsModel.getValue();
+                TiledMap map = MapGenerator.generateTiledMap(worldWidth, worldHeight, colorSteps);
                 game.setScreen(new GameScreen(game, map));
             }
         });

@@ -14,8 +14,9 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import ru.daemon.colorization.game.actors.player.CollectColor;
+import ru.daemon.colorization.game.actors.player.ColorActor;
 import ru.daemon.colorization.game.actors.player.MoveCellActorByKeyboard;
-import ru.daemon.colorization.game.actors.player.Player;
+import ru.daemon.colorization.game.logic.ColorHolder;
 import ru.daemon.colorization.game.map.MapGenerator;
 import ru.daemon.colorization.game.turns.TurnManager;
 import ru.daemon.colorization.game.viewport.BoundedViewport;
@@ -32,7 +33,7 @@ public class GameScreen extends ScreenAdapter {
     private VisLabel redLabel;
     private VisLabel greenLabel;
     private VisLabel blueLabel;
-    private Player player;
+    private ColorActor player;
     private final TiledMapTileLayer terrain;
 
     public GameScreen(final Game game, TiledMap map) {
@@ -46,8 +47,9 @@ public class GameScreen extends ScreenAdapter {
         viewport = initViewport();
         Stage stage = new Stage(viewport);
 
-        player = new Player((TiledMapTileLayer) mapRenderer.getMap().getLayers().get(MapGenerator.TERRAIN_LAYER));
+        player = new ColorActor((TiledMapTileLayer) mapRenderer.getMap().getLayers().get(MapGenerator.TERRAIN_LAYER));
         player.setCellPosition(0, 0, 0.2f);
+        player.getColorHolder().getBlue().set(1000);
         player.addAction(Actions.forever(new FollowingViewportAction(viewport)));
 
         TurnManager turnManager = initTurnManager();
@@ -68,10 +70,13 @@ public class GameScreen extends ScreenAdapter {
 
     private TurnManager initTurnManager() {
         TurnManager turnManager = new TurnManager();
-        turnManager.addAfterTurnHandler(new CollectColor(player, terrain));
-        turnManager.addAfterTurnHandler(() -> redLabel.setText(Integer.toString(player.getRed())));
-        turnManager.addAfterTurnHandler(() -> greenLabel.setText(Integer.toString(player.getGreen())));
-        turnManager.addAfterTurnHandler(() -> blueLabel.setText(Integer.toString(player.getBlue())));
+        turnManager.addAfterTurnHandler(new CollectColor(terrain, player, ColorHolder.Component.RED, 1));
+        turnManager.addAfterTurnHandler(new CollectColor(terrain, player, ColorHolder.Component.BLUE, -1));
+
+        ColorHolder color = player.getColorHolder();
+        turnManager.addAfterTurnHandler(() -> redLabel.setText(Integer.toString(color.getRed().get())));
+        turnManager.addAfterTurnHandler(() -> greenLabel.setText(Integer.toString(color.getGreen().get())));
+        turnManager.addAfterTurnHandler(() -> blueLabel.setText(Integer.toString(color.getBlue().get())));
         turnManager.addBeforeTurnHandler(() -> turnLabel.setText("Turn: " + turnManager.getTurnCount()));
         return turnManager;
     }

@@ -8,23 +8,42 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 
-public class ColorTileSet {
+public class ColorTileSet extends TiledMapTileSet {
     public static final int TILE_SIZE = 32;
-    private static TiledMapTileSet tileSet = getTileSet();
+    private final int colors;
 
-    public static TiledMapTileSet getTileSet() {
-        if (tileSet != null) return tileSet;
-
-        tileSet = new TiledMapTileSet();
-        for (byte r = 0; r < PointColor.COLORS_NUMBER; r++) {
-            for (byte g = 0; g < PointColor.COLORS_NUMBER; g++) {
-                for (byte b = 0; b < PointColor.COLORS_NUMBER; b++) {
-                    PointColor color = new PointColor(r, g, b);
-                    tileSet.putTile(color.getId(), generateTile(color.getTrueColor()));
+    public ColorTileSet(int colors) {
+        this.colors = colors;
+        if (colors < 2 || colors > Byte.MAX_VALUE) {
+            throw new IllegalArgumentException("Colors should be between 2 and " + Byte.MAX_VALUE);
+        }
+        for (byte r = 0; r < colors; r++) {
+            for (byte g = 0; g < colors; g++) {
+                for (byte b = 0; b < colors; b++) {
+                    int id = generateId(r, g, b);
+                    Color color = generateColor(r, g, b);
+                    TiledMapTile tile = generateTile(color);
+                    putTile(id, tile);
                 }
             }
         }
-        return tileSet;
+    }
+
+    public TiledMapTile getTile(int r, int g, int b) {
+        int id = generateId(r, g, b);
+        return getTile(id);
+    }
+
+    private Color generateColor(int r, int g, int b) {
+        return new Color(toFloat(r), toFloat(g), toFloat(b), 1f);
+    }
+
+    private float toFloat(int color) {
+        return 0.3f + 0.6f * color / (colors - 1);
+    }
+
+    private int generateId(int r, int g, int b) {
+        return r << 2 * Byte.SIZE | g << Byte.SIZE | b;
     }
 
     private static TiledMapTile generateTile(Color color) {
