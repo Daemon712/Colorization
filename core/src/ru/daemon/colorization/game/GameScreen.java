@@ -13,16 +13,27 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
+import ru.daemon.colorization.game.actors.ActorTextureFactory;
 import ru.daemon.colorization.game.actors.player.CollectColor;
 import ru.daemon.colorization.game.actors.player.ColorActor;
 import ru.daemon.colorization.game.actors.player.MoveCellActorByKeyboard;
+import ru.daemon.colorization.game.actors.player.MoveCellActorByRandom;
 import ru.daemon.colorization.game.logic.ColorHolder;
+import ru.daemon.colorization.game.logic.PointHolder;
 import ru.daemon.colorization.game.map.MapGenerator;
 import ru.daemon.colorization.game.turns.TurnManager;
 import ru.daemon.colorization.game.viewport.BoundedViewport;
 import ru.daemon.colorization.game.viewport.FollowingViewportAction;
 import ru.daemon.colorization.game.viewport.ZoomViewportByScroll;
 import ru.daemon.colorization.menu.MainMenuScreen;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
+
+import static ru.daemon.colorization.game.logic.ColorHolder.Component;
 
 public class GameScreen extends ScreenAdapter {
     private final OrthogonalTiledMapRenderer mapRenderer;
@@ -33,8 +44,10 @@ public class GameScreen extends ScreenAdapter {
     private VisLabel redLabel;
     private VisLabel greenLabel;
     private VisLabel blueLabel;
-    private ColorActor player;
+    private ColorActor hero;
+    private List<ColorActor> players = new ArrayList<>();
     private final TiledMapTileLayer terrain;
+    private TurnManager turnManager;
 
     public GameScreen(final Game game, TiledMap map) {
         mapRenderer = new OrthogonalTiledMapRenderer(map);
@@ -44,41 +57,63 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private Stage initWorld() {
-        viewport = initViewport();
+        initViewport();
         Stage stage = new Stage(viewport);
 
-        player = new ColorActor((TiledMapTileLayer) mapRenderer.getMap().getLayers().get(MapGenerator.TERRAIN_LAYER));
-        player.setCellPosition(0, 0, 0.2f);
-        player.getColorHolder().getBlue().set(1000);
-        player.addAction(Actions.forever(new FollowingViewportAction(viewport)));
-
-        TurnManager turnManager = initTurnManager();
+        turnManager = new TurnManager();
+        initPlayers();
+        initGUI();
 
         stage.addAction(turnManager);
-        stage.addActor(player);
-        stage.addListener(new MoveCellActorByKeyboard(turnManager, player));
+        players.forEach(stage::addActor);
+        stage.addListener(new MoveCellActorByKeyboard(turnManager, hero));
         stage.addListener(new ZoomViewportByScroll(stage));
         return stage;
     }
 
-    private BoundedViewport initViewport() {
+    private void initPlayers() {
+        List<Component> components = Arrays.asList(Component.values());
+        Collections.shuffle(components);
+
+        for (Component component : components) {
+            int max = terrain.getWidth() * terrain.getHeight();
+            ColorHolder ch = new ColorHolder(max + 1);
+            ch.get(component).set(max);
+
+            Function<PointHolder, Float> func = (point) -> 0.5f + (float) point.get() / max / 2;
+            Color color = new Color(func.apply(ch.getRed()), func.apply(ch.getGreen()), func.apply(ch.getBlue()), 1);
+            ColorActor player = new ColorActor(terrain, ActorTextureFactory.createPlayerTexture(color), ch);
+
+            turnManager.addAfterTurnHandler(new CollectColor(terrain, player, component, -1));
+            Arrays.stream(Component.values())
+                    .filter(c -> c != component)
+                    .forEach(c -> turnManager.addAfterTurnHandler(new CollectColor(terrain, player, c, 1)));
+
+            players.add(player);
+        }
+
+        hero = players.get(0);
+        hero.addAction(Actions.forever(new FollowingViewportAction(viewport)));
+
+        players.get(1).setCellPosition(0, terrain.getHeight() - 1);
+        turnManager.addBeforeTurnHandler(new MoveCellActorByRandom(turnManager, players.get(1)));
+        players.get(2).setCellPosition(terrain.getWidth() - 1, 0);
+        turnManager.addBeforeTurnHandler(new MoveCellActorByRandom(turnManager, players.get(2)));
+    }
+
+    private void initViewport() {
         float terrainHeight = terrain.getHeight() * terrain.getTileHeight();
         float terrainWidth = terrain.getWidth() * terrain.getTileWidth();
         float tileSize = (terrain.getTileHeight() + terrain.getTileWidth()) / 2;
-        return new BoundedViewport(5 * tileSize, terrainHeight, terrainWidth, -tileSize / 2);
+        viewport = new BoundedViewport(5 * tileSize, terrainHeight, terrainWidth, -tileSize / 2);
     }
 
-    private TurnManager initTurnManager() {
-        TurnManager turnManager = new TurnManager();
-        turnManager.addAfterTurnHandler(new CollectColor(terrain, player, ColorHolder.Component.RED, 1));
-        turnManager.addAfterTurnHandler(new CollectColor(terrain, player, ColorHolder.Component.BLUE, -1));
-
-        ColorHolder color = player.getColorHolder();
+    private void initGUI() {
+        ColorHolder color = hero.getColorHolder();
         turnManager.addAfterTurnHandler(() -> redLabel.setText(Integer.toString(color.getRed().get())));
         turnManager.addAfterTurnHandler(() -> greenLabel.setText(Integer.toString(color.getGreen().get())));
         turnManager.addAfterTurnHandler(() -> blueLabel.setText(Integer.toString(color.getBlue().get())));
         turnManager.addBeforeTurnHandler(() -> turnLabel.setText("Turn: " + turnManager.getTurnCount()));
-        return turnManager;
     }
 
     private Stage initUI(Game game) {

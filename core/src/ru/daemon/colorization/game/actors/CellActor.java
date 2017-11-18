@@ -28,8 +28,10 @@ public class CellActor extends Image {
     }
 
     public void setCellPosition(int cellX, int cellY, float duration){
-        if (!checkCellPosition(cellX, cellY))
-            throw new IllegalArgumentException();
+        if (!checkCellX(cellX))
+            throw new IllegalArgumentException("X should be between 0 and " + tileLayer.getWidth() + "; Given = " + cellX);
+        if (!checkCellY(cellY))
+            throw new IllegalArgumentException("Y should be between 0 and " + tileLayer.getHeight() + "; Given = " + cellY);
 
         this.cellX = cellX;
         this.cellY = cellY;
@@ -45,7 +47,14 @@ public class CellActor extends Image {
     }
 
     public boolean checkCellPosition(int cellX, int cellY){
-        return cellY >= 0 && cellY < tileLayer.getHeight() &&
-                cellX >= 0 && cellX < tileLayer.getWidth();
+        return checkCellY(cellY) && checkCellX(cellX);
+    }
+
+    private boolean checkCellY(int cellY) {
+        return cellY >= 0 && cellY < tileLayer.getHeight();
+    }
+
+    private boolean checkCellX(int cellX) {
+        return cellX >= 0 && cellX < tileLayer.getWidth();
     }
 }

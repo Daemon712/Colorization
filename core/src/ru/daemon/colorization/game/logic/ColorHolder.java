@@ -1,5 +1,7 @@
 package ru.daemon.colorization.game.logic;
 
+import com.badlogic.gdx.graphics.Color;
+
 public class ColorHolder {
     private final PointHolder red;
     private final PointHolder green;
@@ -43,8 +45,18 @@ public class ColorHolder {
     }
 
     public enum Component {
-        RED,
-        GREEN,
-        BLUE,
+        RED(Color.RED),
+        GREEN(Color.GREEN),
+        BLUE(Color.BLUE);
+
+        private Color color;
+
+        Component(Color color) {
+            this.color = color;
+        }
+
+        public Color getColor() {
+            return color;
+        }
     }
 }
