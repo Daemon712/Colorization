@@ -1,11 +1,9 @@
 package ru.daemon.colorization.game.logic;
 
-import com.badlogic.gdx.graphics.Color;
-
 public class ColorHolder {
-    private final PointHolder red;
-    private final PointHolder green;
-    private final PointHolder blue;
+    public final PointHolder red;
+    public final PointHolder green;
+    public final PointHolder blue;
 
     public ColorHolder(int steps) {
         this.red = new PointHolder(0, steps - 1);
@@ -19,44 +17,22 @@ public class ColorHolder {
         this.blue = new PointHolder(0, steps - 1 , blue);
     }
 
-    public PointHolder getRed() {
-        return red;
-    }
-
-    public PointHolder getGreen() {
-        return green;
-    }
-
-    public PointHolder getBlue() {
-        return blue;
-    }
-
     public PointHolder get(Component component) {
         switch (component) {
             case RED:
-                return getRed();
+                return red;
             case GREEN:
-                return getGreen();
+                return green;
             case BLUE:
-                return getBlue();
+                return blue;
             default:
-                return null;
+                throw new UnsupportedOperationException("unknown component " + component);
         }
     }
 
     public enum Component {
-        RED(Color.RED),
-        GREEN(Color.GREEN),
-        BLUE(Color.BLUE);
-
-        private Color color;
-
-        Component(Color color) {
-            this.color = color;
-        }
-
-        public Color getColor() {
-            return color;
-        }
+        RED,
+        GREEN,
+        BLUE
     }
 }

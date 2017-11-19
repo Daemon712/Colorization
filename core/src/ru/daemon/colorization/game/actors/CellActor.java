@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class CellActor extends Image {
-    private TiledMapTileLayer tileLayer;
+    private final TiledMapTileLayer tileLayer;
     private int cellX;
     private int cellY;
 
@@ -21,6 +21,10 @@ public class CellActor extends Image {
 
     public int getCellY() {
         return cellY;
+    }
+
+    public TiledMapTileLayer.Cell getCell(){
+        return tileLayer.getCell(cellX, cellY);
     }
 
     public void setCellPosition(int cellX, int cellY) {

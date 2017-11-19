@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import ru.daemon.colorization.game.MathUtils;
 
 public class ColorTileSet extends TiledMapTileSet {
     public static final int TILE_SIZE = 32;
@@ -43,7 +44,8 @@ public class ColorTileSet extends TiledMapTileSet {
     }
 
     private int generateId(int r, int g, int b) {
-        return r << 2 * Byte.SIZE | g << Byte.SIZE | b;
+        int bits = MathUtils.infoQuantity(colors);
+        return r << 2 * bits | g << bits | b;
     }
 
     private static TiledMapTile generateTile(Color color) {

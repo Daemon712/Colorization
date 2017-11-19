@@ -81,13 +81,13 @@ public class GameScreen extends ScreenAdapter {
             ch.get(component).set(max);
 
             Function<PointHolder, Float> func = (point) -> 0.5f + (float) point.get() / max / 2;
-            Color color = new Color(func.apply(ch.getRed()), func.apply(ch.getGreen()), func.apply(ch.getBlue()), 1);
+            Color color = new Color(func.apply(ch.red), func.apply(ch.green), func.apply(ch.blue), 1);
             ColorActor player = new ColorActor(terrain, ActorTextureFactory.createPlayerTexture(color), ch);
 
-            turnManager.addAfterTurnHandler(new CollectColor(terrain, player, component, -1));
+            turnManager.addAfterTurnHandler(new CollectColor(player, component, -1));
             Arrays.stream(Component.values())
                     .filter(c -> c != component)
-                    .forEach(c -> turnManager.addAfterTurnHandler(new CollectColor(terrain, player, c, 1)));
+                    .forEach(c -> turnManager.addAfterTurnHandler(new CollectColor(player, c, 1)));
 
             players.add(player);
         }
@@ -109,10 +109,10 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void initGUI() {
-        ColorHolder color = hero.getColorHolder();
-        turnManager.addAfterTurnHandler(() -> redLabel.setText(Integer.toString(color.getRed().get())));
-        turnManager.addAfterTurnHandler(() -> greenLabel.setText(Integer.toString(color.getGreen().get())));
-        turnManager.addAfterTurnHandler(() -> blueLabel.setText(Integer.toString(color.getBlue().get())));
+        ColorHolder color = hero.color();
+        turnManager.addAfterTurnHandler(() -> redLabel.setText(Integer.toString(color.red.get())));
+        turnManager.addAfterTurnHandler(() -> greenLabel.setText(Integer.toString(color.green.get())));
+        turnManager.addAfterTurnHandler(() -> blueLabel.setText(Integer.toString(color.blue.get())));
         turnManager.addBeforeTurnHandler(() -> turnLabel.setText("Turn: " + turnManager.getTurnCount()));
     }
 
